@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Echart</title>
+      <!-- 引入 echarts.js -->
+    <script src="{{ url_for('static', filename='echarts.min.js') }}"></script>
+    <!-- 引入jquery.js -->
+    <script src="{{ url_for('static', filename='jquery-3.3.1.js') }}"></script>
+
+</head>
+<body>
+    <div id="main" style="width: 1000px;height: 800px;"></div>
+    <div id="main2" style="width: 1000px;height: 800px;"></div>
+    <div id="main3" style="width: 1200px;height: 800px;"></div>
+	<script type="text/javascript">
+		var myChart =echarts.init(document.getElementById('main'));
+		var myChart1=echarts.init(document.getElementById('main2'));
+		var myChart2=echarts.init(document.getElementById('main3'));
+		var app={
+        //legname1:[],
+			ySaleIn2017:[],
+			ySaleIn2018:[],
+			y2017cos:[],
+            y2018cos:[],
+			xdate:[],
+		};
+		
+		$(document).ready(function () {
+        getData();
+        //console.log(app.legname);
+        console.log(app.ySaleIn2017);
+        console.log(app.ySaleIn2018);
+        console.log(app.y2017cos);
+        console.log(app.y2018cos);
+		console.log(app.xdate);
+    });
+    function  getData() {
+        $.ajax({
+            url:'/test',
+            data:{},
+            type:'POST',
+            async:false,
+            dataType:'json',
+            success:function (data) {
+                app.ySaleIn2017 = data.ySaleIn2017;
+                app.ySaleIn2018 = data.ySaleIn2018;
+                app.y2017cos = data.y2017cos;
+                app.y2018cos = data.y2018cos;
+				app.xdate = data.xdate;
+                myChart.setOption({
+                    title:{
+                        text:'销售情况',
+                        subtext:'2017-2018年',
+                        x:'center',
+                        y:'top',
+                        textAlign:'center',
+                        textStyle: {
+                            fontFamily:'KaiTi',
+                            fontSize: 20,
+                            color: 'green',
+                        },
+                        subtextStyle:{
+                            fontFamily:'KaiTi',
+                            fontSize: 15,
+                            color: 'red',
+                            fontWeight: 'Lighter',
+                        },
+                    },
+                    {#tooltip:{},#}
+                    legend:{
+                        orient: 'vertical',
+                        x:'right',
+                        data:['SalesIn2017','SalesIn2018','2017cos','2018cos'],
+                    },
+                    xAxis:{
+                        data:app.xdate,
+                        name:'month',
+                        axisLabel: {
+                            color: 'red',
+                            fontSize: 15,
+                        },
+                    },
+                    yAxis:{
+                        type:'value',
+                        name:'Series',
+                    },
+                    series:[{
+                        name:'SalesIn2017',
+                        type: 'bar',
+                        data:app.ySaleIn2017
+                     },
+                     {
+                        name:'SalesIn2018',
+                        type:'bar',
+                        data:app.ySaleIn2018
+                     },
+                     {
+                        name:'2017cos',
+                        type:'bar',
+                        data:app.y2017cos
+                     },
+                     {
+                        name:'2018cos',
+                        type:'bar',
+                        data:app.y2018cos
+                     }
+                     ]
+				});
+
+                myChart1.setOption({
+                    title:{
+                        text: 'Sale Condition',
+                        subtext:'2017-2018年',
+                        x:'center',
+                        y:'top',
+                        textAlign:'center',
+                        textStyle: {
+                            fontFamily:'Arial',
+                            fontSize: 20,
+                            color: 'orange',
+                        },
+                        subtextStyle:{
+                            fontFamily:'KaiTi',
+                            fontSize: 15,
+                            color: 'red',
+                            fontWeight: 'Lighter',
+                        },
+                    },
+                    tooltip: {
+                        trigger:'axis',
+                        axisPointer:{
+                            type:'cross',
+                            label:{
+                                backgroundColor: '#6a7985'
+                            }
+                        }
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        x:'right',
+                       data:['SaleIn2017','SaleIn2018','2017cos','2018cos']
+                    },
+                     grid: {
+                         left: '3%',
+                         right:'4%',
+                         bottom:'3%',
+                         containLabel:true
+                     },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data:app.xdate,
+                        axisLabel: {
+                        interval:0,
+                        rotate:40
+                    }
+                    },
+                    yAxis: {
+                        type:'value',
+                    },
+                    series: [{
+                        name:'SaleIn2017',
+                        type:'line',
+                        data:app.ySaleIn2017,
+                        color:'#000fff',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top'
+                            }
+                        },
+                        areaStyle: {
+                            color:'#000fff5c',
+                            shadowColor:'#000',
+                            shadowBlur:10,
+                        },//填充
+                        smooth:true,
+                    },{
+                        name:'SaleIn2018',
+                        type:'line',
+                        data:app.ySaleIn2018,
+                        color:'#ff0071',
+                        label:{
+                            normal:{
+                                show:true,
+                                position:'top'
+                            }
+                        },
+                        areaStyle:{
+                            color:'#ff00715c',
+                            shadowColor: '#fff',
+                            shadowBlur: 10,
+                        },
+                        smooth: true,
+                    },{
+                        name:'2017cos',
+                        type:'line',
+                        data:app.y2017cos,
+                        color:'#ff3333',
+                        label:{
+                            normal:{
+                                show:true,
+                                position:'top'
+                            }
+                        },
+                        areaStyle:{
+                            color:'#ff3333',
+                            shadowColor:'#444444',
+                            shadowBlur:15,
+                        },
+                        smooth:true,
+                    },{
+                        name:'2018cos',
+                        type:'line',
+                        data:app.y2018cos,
+                        color:'#77ff00',
+                        label:{
+                            normal:{
+                                show:true,
+                                position:'top'
+                            }
+                        },
+                        areaStyle:{
+                            color:'#77ff00',
+                            shadowColor:'#00AA55',
+                            shadowBlur:15,
+                        },
+                        smooth:true,
+                    }]
+                });
+
+                var indicator=[];
+                for(var i = 0;i<app.xdate.length;i++){
+                    indicator.push({
+                        name:app.xdate[i],max:2000000
+                    })
+                }
+
+                myChart2.setOption({
+
+                    title:{
+                        text:'radar map',
+                        subtext:'2017-2018年',
+                        x:'center',
+                        y:'top',
+                        textAlign:'center',
+                        textStyle: {
+                            fontFamily:'Arial',
+                            fontSize: 20,
+                            color: 'green',
+                        },
+                        subtextStyle:{
+                            fontFamily:'KaiTi',
+                            fontSize: 15,
+                            color: 'red',
+                            fontWeight: 'normal',
+                        },
+                    },
+                    {#tooltip:{},#}
+                    legend:{
+                        orient: 'vertical',
+                        x:'right',
+                        data:['SaleIn2017','SaleIn2018','2017cos','2018cos']
+                    },
+                    //雷达图样式设计
+                    radar:{
+                        //标签样式
+                        name:{
+                            textStyle:{
+                                color: '#fff',
+                                backgroundColor: '#000',
+                                borderRadius: 4,
+                                fontSize:36
+                            }
+                        },
+                        //引用定义的for循环引用标签数据xdate
+                        indicator:indicator
+                    },
+                    series:[{
+                        name:'SaleIn2017',
+                        type:'radar',
+                        //雷达图数值数据导入
+                        data:[
+                            {
+                                value:app.ySaleIn2017,
+                                name:'SaleIn2017'
+                            }
+                        ]
+                    },
+                        {
+                        name:'SaleIn2018',
+                        type:'radar',
+                        //雷达图数值数据导入
+                        data:[
+                            {
+                                value:app.ySaleIn2018,
+                                name:'SaleIn2018'
+                            }
+                        ]
+                    },
+                        {
+                        name:'2017cos',
+                        type:'radar',
+                        //雷达图数值数据导入
+                        data:[
+                            {
+                                value:app.y2017cos,
+                                name:'2017cos'
+                            }
+                        ]
+                    },
+                        {
+                        name:'2018cos',
+                        type:'radar',
+                        //雷达图数值数据导入
+                        data:[
+                            {
+                                value:app.y2018cos,
+                                name:'2018cos'
+                            }
+                        ]
+                    }]
+                })
+			},
+            error:function (msg) {
+                console.log(msg);
+                alert('系统错误');
+            }
+        })
+    }
+</script>
+
+</body>
+</html>
